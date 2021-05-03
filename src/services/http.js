@@ -25,6 +25,7 @@ const onSendRequest = (config) => {
   const token = store.getState()?.auth?.accessToken;
 
   if (token) {
+    // eslint-disable-next-line no-param-reassign
     config.headers.Authorization = `Bearer ${token}`;
   }
 

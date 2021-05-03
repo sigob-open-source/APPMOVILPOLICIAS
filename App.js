@@ -1,25 +1,36 @@
+// Dependencies
 import React, { useEffect, useRef } from 'react';
-import { Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
-
-// Screens7
-import LoginScreen from './src/screens/VentaLogin';
-import MenuPrincicpal from './src/screens/MenuPrincicpal';
-import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
-import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
-import CargosPadron from './src/screens/CargosPadron';
-import Infracciones from './src/screens/Infracciones';
-
+// Utilities
+import { bgColor, primaryColor } from './src/utils/colors';
 import { store, persistor } from './src/store';
 import { navigationRef } from './src/utils/navigation';
-import { clearNotificationAction } from './src/store/actions/app';
 
+// Screens
+import LoginScreen from './src/screens/VentaLogin';
+// import MenuPrincicpal from './src/screens/MenuPrincicpal';
+// import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
+// import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
+// import CargosPadron from './src/screens/CargosPadron';
+// import Infracciones from './src/screens/Infracciones';
+
+// Setup
+const theme = {
+  ...DefaultTheme,
+  dark: false,
+  colors: {
+    ...DefaultTheme.colors,
+    background: bgColor,
+    primary: primaryColor,
+  },
+};
 const Stack = createStackNavigator();
 
+// Navigators
 const AuthNavigation = () => (
   <Stack.Navigator headerMode="none">
     <Stack.Screen name="Login" component={LoginScreen} />
@@ -27,9 +38,7 @@ const AuthNavigation = () => (
 );
 
 const HomeNavigation = () => (
-  <Stack.Navigator headerMode="none">
-    
-  </Stack.Navigator>
+  <Stack.Navigator headerMode="none" />
 );
 
 const AppNavigation = () => {
@@ -38,7 +47,6 @@ const AppNavigation = () => {
 
   // Hooks
   const notification = useSelector((state) => state.app?.notification);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (notification && notification.message) {
@@ -50,36 +58,24 @@ const AppNavigation = () => {
     }
   }, [notification]);
 
-  const clearNotification = () => {
-    dispatch(clearNotificationAction(dispatch));
-  };
-
   return (
     <>
       <Stack.Navigator headerMode="none" initialRouteName="auth">
         <Stack.Screen name="auth" component={AuthNavigation} />
         <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>
-      {/* <DropdownAlert
-        ref={dropdownalert}
-        onClose={() => clearNotification()}
-        updateStatusBar={false}
-      /> */}
     </>
   );
 };
 
-export default () => {
-  useEffect(() => {
-    // MapboxGL.setAccessToken('pk.eyJ1IjoiYWJpZWxyb2JsZWRvIiwiYSI6ImNrbnlnZTVyajBpaXYyd3BmODNya211NDIifQ.6pVja2oPycvM3dmQlX5boQ');
-  }, []);
+export default function App() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <NavigationContainer ref={navigationRef} headerMode="none">
+        <NavigationContainer ref={navigationRef} headerMode="none" theme={theme}>
           <AppNavigation />
         </NavigationContainer>
       </PersistGate>
     </Provider>
   );
-};
+}

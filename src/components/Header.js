@@ -1,6 +1,6 @@
 // Dependencies
-import React, {useEffect} from 'react';
-import { SafeAreaView } from 'react-native';
+import React from 'react';
+import { SafeAreaView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BaseIcon from 'react-native-vector-icons/Ionicons';
 import propTypes from 'prop-types';
@@ -12,17 +12,11 @@ export default function Header({
   backgroundColor,
   title,
   children,
-  route,
   ...props
 }) {
   const navigation = useNavigation();
 
-  useEffect(() => {
-    console.log();
-  }, [navigation])
-
   const renderLeftIcon = () => {
-
     const icon = props.leftBtnIcon;
     let iconName = null;
     if (typeof icon === 'string') {
@@ -77,25 +71,25 @@ export default function Header({
     if (iconName) {
       <HeaderBtn disabled={props.rightBtnDisabled} onPress={() => props.rightBtnOnPress()}>
         {renderRightIcon()}
-      </HeaderBtn>
+      </HeaderBtn>;
     }
     return icon;
   };
 
   return (
-    <Container style={{backgroundColor}}>
+    <Container style={{ backgroundColor }}>
       <InnerContainer>
         <TitleContainer>
           {
             children || (
               <>
-                <HeaderButtonContainer style={{left: 0}}>
+                <HeaderButtonContainer style={{ left: 0 }}>
                   {renderLeftComponent()}
                 </HeaderButtonContainer>
                 <Title>
                   {title}
                 </Title>
-                <HeaderButtonContainer style={{right: 0}}>
+                <HeaderButtonContainer style={{ right: 0 }}>
                   {renderRightComponent()}
                 </HeaderButtonContainer>
               </>
@@ -129,7 +123,7 @@ Header.defaultProps = {
   rightBtnIcon: undefined,
   rightBtnOnPress: () => {},
   rightBtnDisabled: false,
-}
+};
 
 const Container = styled(SafeAreaView)``;
 
