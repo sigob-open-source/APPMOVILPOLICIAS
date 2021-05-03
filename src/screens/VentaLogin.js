@@ -11,6 +11,6 @@ export default function VentaLogin() {
 
 const styles = StyleSheet.create ({
  colorFondo: {
-   backgroundColor: '"#F3F4F9',
+   backgroundColor: '#F3F4F9',
  },
 });

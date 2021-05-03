@@ -7,14 +7,12 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 
 // Screens7
-import LoginScreen from '../AppDeMultas/src/screens/VentaLogin';
-import MenuPrincicpal from '../AppDeMultas/src/screens/MenuPrincicpal';
-import BusquedaDePlacas from '../AppDeMultas/src/screens/BusquedaDePlacas';
-import BusquedaDeCiudadano from '../AppDeMultas/src/screens/BusquedaDeCiudadano';
-import CargosPadron from '../AppDeMultas/src/screens/CargosPadron';
-import Infracciones from '../AppDeMultas/src/screens/Infracciones';
-
-
+import LoginScreen from './src/screens/VentaLogin';
+import MenuPrincicpal from './src/screens/MenuPrincicpal';
+import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
+import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
+import CargosPadron from './src/screens/CargosPadron';
+import Infracciones from './src/screens/Infracciones';
 
 import { store, persistor } from './src/store';
 import { navigationRef } from './src/utils/navigation';
