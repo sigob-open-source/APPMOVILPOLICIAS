@@ -14,9 +14,9 @@ import { navigationRef } from './src/utils/navigation';
 import LoginScreen from './src/screens/VentaLogin';
 import InfraccionesComunesScreen from './src/screens/infracciones-comunes';
 import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
-// import MenuPrincicpal from './src/screens/MenuPrincicpal';
-// import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
-// import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
+import CobroScreen from './src/screens/cobro';
+import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
+import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
 // import CargosPadron from './src/screens/CargosPadron';
 // import Infracciones from './src/screens/Infracciones';
 
@@ -42,7 +42,10 @@ const AuthNavigation = () => (
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
     <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
+    <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
+    <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
+    <Stack.Screen name="Cobro" component={CobroScreen} />
   </Stack.Navigator>
 );
 
@@ -65,7 +68,7 @@ const AppNavigation = () => {
 
   return (
     <>
-      <Stack.Navigator headerMode="none" initialRouteName="home">
+      <Stack.Navigator headerMode="none" initialRouteName="auth">
         <Stack.Screen name="auth" component={AuthNavigation} />
         <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>

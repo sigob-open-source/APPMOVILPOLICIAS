@@ -41,7 +41,7 @@ export default function ListItem({
   );
 }
 
-const Container = styled.View`
+export const Container = styled.View`
   height: auto;
   min-height: 60px;
   border-radius: 30px;
@@ -53,31 +53,31 @@ const Container = styled.View`
   margin: 5px;
 `;
 
-// height: 100%;
-const ClaveContainer = styled.View`
+export const ClaveContainer = styled.View`
   width: 60px;
   justify-content: center;
   padding-left: 10px;
 `;
 
-const NormalText = styled.Text`
+export const NormalText = styled.Text`
   font-size: 12px;
 `;
 
-const BoldText = styled(NormalText)`
+export const BoldText = styled(NormalText)`
   font-size: 14px;
   font-weight: bold;
 `;
 
-const DescriptionContainer = styled.View`
+export const DescriptionContainer = styled.View`
   flex: 1;
 `;
 
-const TotalContainer = styled.View`
+export const TotalContainer = styled.View`
   align-items: center;
+  margin-left: 5px;
 `;
 
-const Dot = styled.View`
+export const Dot = styled.View`
   height: 10px;
   width: 10px;
   background-color: #00FFFA;

@@ -19,7 +19,7 @@ export default function VentaLogin() {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: 'home', params: { screen: 'SeleccionarMunicipio' } }],
+        routes: [{ name: 'home', params: { screen: 'MenuPrincipal' } }],
       }),
     );
   };
@@ -35,10 +35,10 @@ export default function VentaLogin() {
       <TextInput style={styles.inputContraseña} placeholder="Contraseña" />
 
       <Button
-        onPress={() => {}}
+        onPress={login}
         style={{ marginBottom: 20, marginTop: 20 }}
       >
-        <ButtonText onPress={login}>
+        <ButtonText>
           INICIAR SESIÓN
         </ButtonText>
       </Button>

@@ -14,11 +14,11 @@ import Header from '../components/header';
 export default function VentaLogin() {
   const navigation = useNavigation();
 
-  const login = () => {
+  const goBusqueda = () => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: 'home', params: { screen: 'SeleccionarMunicipio' } }],
+        routes: [{ name: 'home', params: { screen: 'BusquedasDePlacas' } }],
       }),
     );
   };
@@ -29,7 +29,7 @@ export default function VentaLogin() {
         goBack
         title="MENU PRINCIPAL"
       />
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={goBusqueda}>
         <View style={styles.generarMulta}>
           <View style={{ flex: 1 }}>
             <Text style={{ color: '#ffffff', fontSize: 30 }}>
