@@ -144,7 +144,7 @@ const TitleContainer = styled.View`
 const Title = styled.Text`
   color: #4a4a4a;
   font-size: 18px;
-  text-transform: capitalize;
+  text-transform: uppercase;
   text-align: center;
 `;
 
