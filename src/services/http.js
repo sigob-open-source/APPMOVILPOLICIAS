@@ -10,6 +10,9 @@ import { navigateWithReset } from '../utils/navigation';
 export const API_SCHEMA = 'https';
 export const API_HOST = 'apigrp.migob.mx/';
 export const API_PATH = '';
+// export const API_SCHEMA = 'http';
+// export const API_HOST = '192.168.1.79:2000/';
+// export const API_PATH = '';
 
 export const httpConfig = {
   baseURL: `${API_SCHEMA}://${API_HOST}${API_PATH}`,

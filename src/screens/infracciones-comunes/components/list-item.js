@@ -27,11 +27,11 @@ export default function ListItem({
 
         <TotalContainer style={{ flexDirection: 'row' }}>
           <BoldText style={{ color: isSelected ? '#ffffff' : HIGHLIGHT_COLOR }}>
-            {String(item.sm).padStart(2, '0')}
+            {String(item.importe).padStart(2, '0')}
           </BoldText>
           <BoldText style={{ color: isSelected ? '#ffffff' : '#BBBCC0' }}>
             { ' ' }
-            SM
+            UMA
           </BoldText>
           <Dot />
         </TotalContainer>
@@ -56,7 +56,7 @@ export const Container = styled.View`
 export const ClaveContainer = styled.View`
   width: 60px;
   justify-content: center;
-  padding-left: 10px;
+  padding-left: 5px;
 `;
 
 export const NormalText = styled.Text`

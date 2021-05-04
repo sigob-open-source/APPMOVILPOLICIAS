@@ -31,11 +31,11 @@ export default function ListItem({
 
       <TotalContainer style={{ flexDirection: 'row' }}>
         <BoldText>
-          {String(item.sm).padStart(2, '0')}
+          {String(item.importe).padStart(2, '0')}
         </BoldText>
         <BoldText>
           { ' ' }
-          SM
+          UMA
         </BoldText>
         <Dot style={{ marginLeft: 10 }} />
       </TotalContainer>

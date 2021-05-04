@@ -44,8 +44,8 @@ const AuthNavigation = () => (
 
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
     <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
+    <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
     <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
     <Stack.Screen name="Infracciones" component={InfraccionesScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
