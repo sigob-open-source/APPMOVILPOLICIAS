@@ -9,6 +9,7 @@ import {
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { useNavigation } from '@react-navigation/native';
 import Header from '../../components/header';
 import Button, { Text as ButtonText } from '../../components/button';
 
@@ -75,6 +76,9 @@ const DATA = [
 export default function InfraccionesScreen() {
   // states
   const [selectedItem, setSelectedItem] = useState(null);
+
+  // Hooks
+  const navigation = useNavigation();
 
   const addCharge = () => {
     setSelectedItem(null);
@@ -152,7 +156,7 @@ export default function InfraccionesScreen() {
 
       <ButtonContainer>
         <Button
-          onPress={() => {}}
+          onPress={() => navigation.navigate('Cobro')}
           text="COBRAR"
         />
       </ButtonContainer>

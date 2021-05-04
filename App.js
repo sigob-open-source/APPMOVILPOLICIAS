@@ -2,8 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import DropdownAlert from 'react-native-dropdownalert';
 
 // Utilities
 import { bgColor, primaryColor } from './src/utils/colors';
@@ -11,18 +12,15 @@ import { store, persistor } from './src/store';
 import { navigationRef } from './src/utils/navigation';
 
 // Screens
-import LoginScreen from './src/screens/VentaLogin';
+import LoginScreen from './src/screens/Login';
 import InfraccionesComunesScreen from './src/screens/infracciones-comunes';
 import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
 import CobroScreen from './src/screens/cobro';
 import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
 import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
 import InfraccionesScreen from './src/screens/infracciones';
-// import MenuPrincicpal from './src/screens/MenuPrincicpal';
-// import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
-// import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
-// import CargosPadron from './src/screens/CargosPadron';
-// import Infracciones from './src/screens/Infracciones';
+import LoadingScreen from './src/screens/loading';
+import { clearNotificationAction } from './src/store/actions/app';
 
 // Setup
 const theme = {
@@ -38,15 +36,16 @@ const Stack = createStackNavigator();
 
 // Navigators
 const AuthNavigation = () => (
-  <Stack.Navigator headerMode="none">
+  <Stack.Navigator headerMode="none" initialRouteName="Loading">
+    <Stack.Screen name="Loading" component={LoadingScreen} />
     <Stack.Screen name="Login" component={LoginScreen} />
   </Stack.Navigator>
 );
 
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
     <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
+    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
     <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
     <Stack.Screen name="Infracciones" component={InfraccionesScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
@@ -60,6 +59,7 @@ const AppNavigation = () => {
 
   // Hooks
   const notification = useSelector((state) => state.app?.notification);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (notification && notification.message) {
@@ -71,12 +71,22 @@ const AppNavigation = () => {
     }
   }, [notification]);
 
+  const clearNotification = () => {
+    clearNotificationAction(dispatch);
+  };
+
   return (
     <>
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="home" component={HomeNavigation} />
         <Stack.Screen name="auth" component={AuthNavigation} />
+        <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>
+
+      <DropdownAlert
+        ref={dropdownalert}
+        onClose={() => clearNotification()}
+        updateStatusBar={false}
+      />
     </>
   );
 };

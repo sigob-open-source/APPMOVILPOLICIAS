@@ -1,87 +1,136 @@
-import React from 'react';
+// Dependencies
+import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput,
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import { CommonActions, useNavigation } from '@react-navigation/native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import styled from 'styled-components';
+
 import Header from '../components/header';
 import { primaryColor } from '../utils/colors';
-import Button, { Text as ButtonText } from '../components/button';
+import Button from '../components/button';
+import {
+  Tab,
+  TabsContainer,
+  TabText as TabTextBase,
+} from './cobro';
 
 export default function BusquedaDePlacas() {
+  // Refs
+  const [selectedTab, setSelectedTab] = useState(1);
+
+  // States
+  const [plates, setPlates] = useState();
+  const [loading, setLoading] = useState(false);
+
+  // Hooks
   const navigation = useNavigation();
 
+  // Utilities
   const goBuscarCiudadano = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'home', params: { screen: 'BusquedaDeCiudadano' } }],
-      }),
-    );
+    setLoading(true);
+
+    navigation.navigate('BusquedaDeCiudadano');
   };
+
   return (
-    <View style={styles.Container}>
+    <>
       <Header
         goBack
         title="DATOS DE PLACAS"
       />
 
-      <ScrollView style={{ flex: 1 }}>
-        <View style={styles.tabs}>
-          <Text style={styles.txtTabs}>
-            Legales
-          </Text>
-          <Text style={styles.txtTabs}>
-            USA
-          </Text>
-          <Text style={styles.txtTabs}>
-            AMPARADA
-          </Text>
-          <Text style={styles.txtTabs}>
-            Sin Placas
-          </Text>
-        </View>
+      <View style={styles.Container}>
+        <ScrollView style={{ flex: 1 }}>
+          <TabsContainer>
+            <TouchableWithoutFeedback
+              onPress={() => setSelectedTab(1)}
+              disabled={selectedTab === 1}
+            >
+              <Tab isSelected={selectedTab === 1}>
+                <TabText isSelected={selectedTab === 1}>
+                  Legales
+                </TabText>
+              </Tab>
+            </TouchableWithoutFeedback>
 
-        <View style={styles.searchInput}>
-          <TextInput placeholder="Buscar Placas..." />
-        </View>
+            <TouchableWithoutFeedback
+              onPress={() => setSelectedTab(2)}
+              disabled={selectedTab === 2}
+            >
+              <Tab isSelected={selectedTab === 2}>
+                <TabText isSelected={selectedTab === 2}>
+                  USA
+                </TabText>
+              </Tab>
+            </TouchableWithoutFeedback>
 
-        <Text style={styles.titulo}>
-          271-NSF2
-        </Text>
+            <TouchableWithoutFeedback
+              onPress={() => setSelectedTab(3)}
+              disabled={selectedTab === 3}
+            >
+              <Tab isSelected={selectedTab === 3}>
+                <TabText isSelected={selectedTab === 3}>
+                  AMPARADA
+                </TabText>
+              </Tab>
+            </TouchableWithoutFeedback>
 
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.subTitle}>Marca:</Text>
-          <Text style={styles.subTitleModelo}>Modelo:</Text>
-        </View>
-      </ScrollView>
+            <TouchableWithoutFeedback
+              onPress={() => setSelectedTab(4)}
+              disabled={selectedTab === 4}
+            >
+              <Tab isSelected={selectedTab === 4}>
+                <TabText isSelected={selectedTab === 4}>
+                  SIN
+                  {'\n'}
+                  PLACAS
+                </TabText>
+              </Tab>
+            </TouchableWithoutFeedback>
 
-      <Button
-        onPress={goBuscarCiudadano}
-        style={{ marginBottom: 20, marginTop: 20 }}
-      >
-        <ButtonText>
-          CONTINUAR
-        </ButtonText>
-      </Button>
-    </View>
+          </TabsContainer>
+
+          <View style={styles.searchInput}>
+            <TextInput
+              value={plates}
+              onChangeText={setPlates}
+              placeholder="Buscar Placas..."
+              placeholderTextColor="#CBCBCB"
+              style={{ color: '#000000' }}
+            />
+          </View>
+
+          <Text style={styles.titulo}>
+            271-NSF2
+          </Text>
+
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.subTitle}>Marca:</Text>
+            <Text style={styles.subTitleModelo}>Modelo:</Text>
+          </View>
+        </ScrollView>
+
+        <Button
+          onPress={goBuscarCiudadano}
+          style={{ marginBottom: 20, marginTop: 20 }}
+          text="CONTINUAR"
+          loading={loading}
+        />
+      </View>
+    </>
   );
 }
+
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    padding: 40,
-  },
-  txtTabs: {
-    margin: 10,
-  },
-  tabs: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 25,
-    padding: 10,
-    marginBottom: 20,
+    paddingHorizontal: 40,
   },
   searchInput: {
     backgroundColor: '#ffffff',
@@ -89,6 +138,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     borderWidth: 1,
     borderColor: '#CFCFCF',
+    color: '#000000',
   },
   titulo: {
     fontSize: 40,
@@ -108,3 +158,7 @@ const styles = StyleSheet.create({
     color: '#4F4F4F',
   },
 });
+
+const TabText = styled(TabTextBase)`
+  font-size: 12px;
+`;

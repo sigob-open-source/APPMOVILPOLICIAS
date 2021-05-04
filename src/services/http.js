@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import { store } from '../store';
 import { dispatchClearAuth, dispatchSetToken } from '../store/actions/auth';
+import { logger } from '../utils/logger';
 import { navigateWithReset } from '../utils/navigation';
 
 // Configuration
@@ -42,7 +43,7 @@ const refreshToken = async (token) => {
     );
     return response?.data?.access;
   } catch (error) {
-    console.error(error);
+    logger('[refreshToken]', error);
   }
   return null;
 };
