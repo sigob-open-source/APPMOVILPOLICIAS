@@ -17,6 +17,10 @@ import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
 import CobroScreen from './src/screens/cobro';
 import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
 import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
+import InfraccionesScreen from './src/screens/infracciones';
+// import MenuPrincicpal from './src/screens/MenuPrincicpal';
+// import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
+// import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
 // import CargosPadron from './src/screens/CargosPadron';
 // import Infracciones from './src/screens/Infracciones';
 
@@ -44,6 +48,7 @@ const HomeNavigation = () => (
     <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
     <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
     <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
+    <Stack.Screen name="Infracciones" component={InfraccionesScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
     <Stack.Screen name="Cobro" component={CobroScreen} />
   </Stack.Navigator>
@@ -68,9 +73,9 @@ const AppNavigation = () => {
 
   return (
     <>
-      <Stack.Navigator headerMode="none" initialRouteName="auth">
-        <Stack.Screen name="auth" component={AuthNavigation} />
+      <Stack.Navigator headerMode="none">
         <Stack.Screen name="home" component={HomeNavigation} />
+        <Stack.Screen name="auth" component={AuthNavigation} />
       </Stack.Navigator>
     </>
   );

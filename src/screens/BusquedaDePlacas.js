@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TextInput,
 } from 'react-native';
-import { subTo } from 'react-native-redash';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Header from '../components/header';
