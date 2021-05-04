@@ -13,6 +13,7 @@ import { navigationRef } from './src/utils/navigation';
 // Screens
 import LoginScreen from './src/screens/VentaLogin';
 import InfraccionesComunesScreen from './src/screens/infracciones-comunes';
+import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
 // import MenuPrincicpal from './src/screens/MenuPrincicpal';
 // import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
 // import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
@@ -40,6 +41,7 @@ const AuthNavigation = () => (
 
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
+    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
   </Stack.Navigator>
 );
@@ -63,7 +65,7 @@ const AppNavigation = () => {
 
   return (
     <>
-      <Stack.Navigator headerMode="none" initialRouteName="auth">
+      <Stack.Navigator headerMode="none" initialRouteName="home">
         <Stack.Screen name="auth" component={AuthNavigation} />
         <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>
