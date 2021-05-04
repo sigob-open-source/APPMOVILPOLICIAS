@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger';
 import { HTTP } from './http';
 
 const login = async (email, password) => {
@@ -8,7 +9,7 @@ const login = async (email, password) => {
     });
     return response?.data?.access ? response?.data : null;
   } catch (error) {
-    console.error(error, error?.response?.data?.detail);
+    logger('[login]', error);
   }
   return null;
 };

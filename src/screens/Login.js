@@ -9,10 +9,14 @@ import {
 } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { CommonActions, useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 import Button from '../components/button';
 
 import { primaryColor } from '../utils/colors';
 import IMAGEN_LOGO from '../../assets/Imagens/Logo.jpg';
+import { login } from '../services/auth';
+import { notificationAction } from '../store/actions/app';
+import { dispatchLogin } from '../store/actions/auth';
 
 export default function VentaLogin() {
   // Refs
@@ -25,16 +29,43 @@ export default function VentaLogin() {
 
   // Hooks
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   // Utilities
-  const submit = () => {
+  const submit = async () => {
     setLoading(true);
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'home', params: { screen: 'MenuPrincipal' } }],
-      }),
-    );
+
+    const _email = email.trim();
+    const _password = password.trim();
+
+    const response = await login(_email, _password);
+
+    if (response?.access) {
+      // Redirect
+      dispatchLogin(dispatch, response);
+
+      notificationAction(dispatch, {
+        type: 'info',
+        title: 'Sesión iniciada',
+        message: 'Ha iniciado sesión.',
+      });
+
+      return navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'loading' }],
+        }),
+      );
+    }
+
+    notificationAction(dispatch, {
+      type: 'warnign',
+      title: 'Error',
+      message: 'Credenciales no válidas',
+    });
+
+    setLoading(false);
+    return passwordInput.current.focus();
   };
 
   return (
@@ -54,6 +85,7 @@ export default function VentaLogin() {
         returnKeyType="next"
         blurOnSubmit={false}
         onSubmitEditing={() => passwordInput.current.focus()}
+        autoCapitalize="none"
       />
 
       <TextInput
@@ -67,6 +99,7 @@ export default function VentaLogin() {
         secureTextEntry
         returnKeyType="done"
         onSubmitEditing={submit}
+        autoCapitalize="none"
       />
 
       <Button
