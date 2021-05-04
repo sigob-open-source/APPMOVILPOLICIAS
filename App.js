@@ -11,7 +11,7 @@ import { store, persistor } from './src/store';
 import { navigationRef } from './src/utils/navigation';
 
 // Screens
-import LoginScreen from './src/screens/VentaLogin';
+import LoginScreen from './src/screens/Login';
 import InfraccionesComunesScreen from './src/screens/infracciones-comunes';
 import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
 import CobroScreen from './src/screens/cobro';
@@ -45,8 +45,8 @@ const AuthNavigation = () => (
 
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
     <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
+    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
     <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
     <Stack.Screen name="Infracciones" component={InfraccionesScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
@@ -74,8 +74,8 @@ const AppNavigation = () => {
   return (
     <>
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="home" component={HomeNavigation} />
         <Stack.Screen name="auth" component={AuthNavigation} />
+        <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>
     </>
   );

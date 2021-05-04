@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import styled from 'styled-components';
 
+import { useNavigation } from '@react-navigation/native';
 import ListItem from './components/list-item';
 import Header from '../../components/header';
 import Button, { Text as ButtonText } from '../../components/button';
@@ -46,6 +47,9 @@ export default function InfraccionesComunesScreen() {
   // Refs
   const [selectedItems, setSelectedItems] = useState({});
 
+  // Hooks
+  const navigation = useNavigation();
+
   const toggleSelect = (idx) => {
     const copy = { ...selectedItems };
     if (copy[idx]) {
@@ -77,7 +81,7 @@ export default function InfraccionesComunesScreen() {
       />
 
       <Button
-        onPress={() => {}}
+        onPress={() => navigation.navigate('Infracciones')}
         style={{ marginBottom: 15 }}
       >
         <Icon name="ios-add-circle-outline" size={30} color="#ffffff" />
@@ -88,7 +92,7 @@ export default function InfraccionesComunesScreen() {
 
       <SafeAreaView style={{ paddingBottom: 15 }}>
         <Button
-          onPress={() => {}}
+          onPress={() => navigation.navigate('Cobro')}
           text="CONTINUAR"
         />
       </SafeAreaView>

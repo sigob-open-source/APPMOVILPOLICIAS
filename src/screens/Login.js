@@ -1,4 +1,5 @@
-import React from 'react';
+// Dependencies
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,14 +9,26 @@ import {
 } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { CommonActions, useNavigation } from '@react-navigation/native';
-import Button, { Text as ButtonText } from '../components/button';
+import Button from '../components/button';
+
 import { primaryColor } from '../utils/colors';
 import IMAGEN_LOGO from '../../assets/Imagens/Logo.jpg';
 
 export default function VentaLogin() {
+  // Refs
+  const passwordInput = useRef();
+
+  // States
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Hooks
   const navigation = useNavigation();
 
-  const login = () => {
+  // Utilities
+  const submit = () => {
+    setLoading(true);
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -30,18 +43,39 @@ export default function VentaLogin() {
         <Image source={IMAGEN_LOGO} style={styles.imgLogo} />
       </View>
 
-      <TextInput style={styles.inputNumeroDeAgente} placeholder="Numero de agente" />
+      <TextInput
+        style={styles.inputNumeroDeAgente}
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Numero de agente"
+        placeholderTextColor="#CBCBCB"
+        editable={!loading}
+        keyboardType="email-address"
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => passwordInput.current.focus()}
+      />
 
-      <TextInput style={styles.inputContraseña} placeholder="Contraseña" />
+      <TextInput
+        ref={passwordInput}
+        value={password}
+        onChangeText={setPassword}
+        style={styles.inputContraseña}
+        placeholder="Contraseña"
+        placeholderTextColor="#CBCBCB"
+        editable={!loading}
+        secureTextEntry
+        returnKeyType="done"
+        onSubmitEditing={submit}
+      />
 
       <Button
-        onPress={login}
+        onPress={submit}
         style={{ marginBottom: 20, marginTop: 20 }}
-      >
-        <ButtonText>
-          INICIAR SESIÓN
-        </ButtonText>
-      </Button>
+        loading={loading}
+        text="INICIAR SESIÓN"
+      />
+
       <TouchableWithoutFeedback style={{ alignItems: 'center' }}>
         <Text style={{ color: primaryColor }}> Olvide mi contraseña</Text>
       </TouchableWithoutFeedback>
@@ -71,6 +105,7 @@ const styles = StyleSheet.create({
     borderColor: '#BBBBBB',
     borderWidth: 1,
     padding: 15,
+    color: '#000000',
   },
   inputContraseña: {
     height: 50,
@@ -80,6 +115,7 @@ const styles = StyleSheet.create({
     borderColor: '#BBBBBB',
     borderWidth: 1,
     padding: 15,
+    color: '#000000',
   },
   imgLogo: {
     resizeMode: 'contain',

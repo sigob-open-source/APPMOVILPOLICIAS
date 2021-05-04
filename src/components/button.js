@@ -1,6 +1,10 @@
 // Dependencies
 import React from 'react';
-import { ViewPropTypes, TouchableWithoutFeedback } from 'react-native';
+import {
+  ViewPropTypes,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+} from 'react-native';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -13,12 +17,15 @@ export default function Button({
   style,
   textStyle,
   disabled,
+  loading,
 }) {
   return (
-    <TouchableWithoutFeedback onPress={onPress} disabled={disabled}>
+    <TouchableWithoutFeedback onPress={onPress} disabled={disabled || loading}>
       <Container style={style}>
         {
-          children || (
+          loading ? (
+            <ActivityIndicator size="large" color="#ffffff" />
+          ) : children || (
             <Text style={textStyle}>
               {text}
             </Text>
@@ -35,6 +42,7 @@ Button.propTypes = {
   style: ViewPropTypes.style,
   textStyle: ViewPropTypes.style,
   disabled: propTypes.bool,
+  loading: propTypes.bool,
 };
 
 Button.defaultProps = {
@@ -42,6 +50,7 @@ Button.defaultProps = {
   style: {},
   textStyle: {},
   disabled: false,
+  loading: false,
 };
 
 const Container = styled.View`

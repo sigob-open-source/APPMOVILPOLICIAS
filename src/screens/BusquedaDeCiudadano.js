@@ -1,15 +1,33 @@
-import React from 'react';
+// Dependencies
+import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { CommonActions, useNavigation } from '@react-navigation/native';
+
+import styled from 'styled-components';
 import Header from '../components/header';
 import { primaryColor } from '../utils/colors';
 import Button, { Text as ButtonText } from '../components/button';
+import {
+  Tab as TabBase,
+  TabsContainer as TabsContainerBase,
+  TabText as TabTextBase,
+} from './cobro';
 
 export default function BusquedaDePlacas() {
+  // States
+  const [hasDriverLicense, setHasDriverLicense] = useState(true);
+
+  // Hooks
   const navigation = useNavigation();
 
+  // Utils
   const goInfraccionesComunes = () => {
     navigation.dispatch(
       CommonActions.reset({
@@ -18,34 +36,58 @@ export default function BusquedaDePlacas() {
       }),
     );
   };
+
   return (
     <View style={styles.Container}>
       <Header
         goBack
-        title="DATOS DE PLACAS"
+        title="DATOS DEL CONDUCTOR"
       />
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.content}>
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
         }}
         >
-          <Text style={{ flex: 1, fontSize: 17 }}>
-            Cuenta con licencia?
-          </Text>
-          <View style={styles.tabs}>
-            <Text style={styles.txtTabs}>
-              Si
-            </Text>
-            <Text style={styles.txtTabs}>
-              No
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 17 }}>
+              ¿Cuenta con licencia?
             </Text>
           </View>
+
+          <TabsContainer>
+            <TouchableWithoutFeedback
+              onPress={() => setHasDriverLicense(true)}
+              disabled={hasDriverLicense}
+            >
+              <Tab isSelected={hasDriverLicense}>
+                <TabText isSelected={hasDriverLicense}>
+                  SÍ
+                </TabText>
+              </Tab>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback
+              onPress={() => setHasDriverLicense(false)}
+              disabled={!hasDriverLicense}
+            >
+              <Tab isSelected={!hasDriverLicense}>
+                <TabText isSelected={!hasDriverLicense}>
+                  NO
+                </TabText>
+              </Tab>
+            </TouchableWithoutFeedback>
+
+          </TabsContainer>
         </View>
 
         <View style={styles.searchInput}>
-          <TextInput placeholder="Buscar Placas..." />
+          <TextInput
+            placeholder="Buscar Placas..."
+            placeholderTextColor="#CBCBCB"
+            style={{ color: '#000000' }}
+          />
         </View>
 
         <View style={styles.ciudadanoContainer}>
@@ -68,7 +110,6 @@ export default function BusquedaDePlacas() {
               <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>
                 Vencida
               </Text>
-
             </View>
           </View>
         </View>
@@ -76,7 +117,7 @@ export default function BusquedaDePlacas() {
 
       <Button
         onPress={goInfraccionesComunes}
-        style={{ marginBottom: 20, marginTop: 20 }}
+        style={{ margin: 20 }}
       >
         <ButtonText>
           CONTINUAR
@@ -85,10 +126,14 @@ export default function BusquedaDePlacas() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    padding: 40,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 40,
   },
   txtTabs: {
     margin: 10,
@@ -108,6 +153,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     borderWidth: 1,
     borderColor: '#CFCFCF',
+    color: '#000000',
   },
   titulo: {
     fontSize: 20,
@@ -142,3 +188,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+const TabsContainer = styled(TabsContainerBase)`
+  height: 30px;
+  width: 120px;
+  margin-top: 15px;
+`;
+
+const Tab = styled(TabBase)``;
+
+const TabText = styled(TabTextBase)`
+  font-size: 12px;
+`;
