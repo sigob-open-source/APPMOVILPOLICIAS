@@ -201,12 +201,12 @@ const BoldText = styled(NormalText)`
   font-size: 18px;
 `;
 
-const TabsContainer = styled(TotalContainer)`
+export const TabsContainer = styled(TotalContainer)`
   padding: 0px;
   overflow: hidden;
 `;
 
-const Tab = styled.View`
+export const Tab = styled.View`
   flex: 1;
   height: 100%;
   background-color: ${(props) => (props.isSelected ? primaryColor : '#ffffff')}
@@ -214,7 +214,7 @@ const Tab = styled.View`
   align-items: center;
 `;
 
-const TabText = styled(NormalText)`
+export const TabText = styled(NormalText)`
   text-align: center;
   color: ${(props) => (props.isSelected ? '#ffffff' : '#737176')}
   text-transform: uppercase;
