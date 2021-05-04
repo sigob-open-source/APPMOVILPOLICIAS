@@ -70,7 +70,6 @@ export default function BusquedaDePlacas() {
               </Text>
 
             </View>
-
           </View>
         </View>
       </ScrollView>
