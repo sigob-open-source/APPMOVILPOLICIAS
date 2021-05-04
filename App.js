@@ -13,7 +13,10 @@ import { navigationRef } from './src/utils/navigation';
 // Screens
 import LoginScreen from './src/screens/VentaLogin';
 import InfraccionesComunesScreen from './src/screens/infracciones-comunes';
+import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
 import CobroScreen from './src/screens/cobro';
+import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
+import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
 import InfraccionesScreen from './src/screens/infracciones';
 // import MenuPrincicpal from './src/screens/MenuPrincicpal';
 // import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
@@ -42,6 +45,9 @@ const AuthNavigation = () => (
 
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
+    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
+    <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
+    <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
     <Stack.Screen name="Infracciones" component={InfraccionesScreen} />
     <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
     <Stack.Screen name="Cobro" component={CobroScreen} />
