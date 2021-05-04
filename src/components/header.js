@@ -47,7 +47,7 @@ export default function Header({
     let onPress = props.leftBtnOnPress;
     let shouldReturnElement = !!props.leftBtnIcon;
 
-    if (props.goBack && navigation.dangerouslyGetState().index > 0) {
+    if (props.goBack) {
       onPress = navigation.goBack;
       shouldReturnElement = props.goBack;
     }
