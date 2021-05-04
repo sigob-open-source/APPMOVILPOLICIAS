@@ -18,11 +18,7 @@ import CobroScreen from './src/screens/cobro';
 import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
 import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
 import InfraccionesScreen from './src/screens/infracciones';
-// import MenuPrincicpal from './src/screens/MenuPrincicpal';
-// import BusquedaDePlacas from './src/screens/BusquedaDePlacas';
-// import BusquedaDeCiudadano from './src/screens/BusquedaDeCiudadano';
-// import CargosPadron from './src/screens/CargosPadron';
-// import Infracciones from './src/screens/Infracciones';
+import LoadingScreen from './src/screens/loading';
 
 // Setup
 const theme = {
@@ -38,7 +34,8 @@ const Stack = createStackNavigator();
 
 // Navigators
 const AuthNavigation = () => (
-  <Stack.Navigator headerMode="none">
+  <Stack.Navigator headerMode="none" initialRouteName="Loading">
+    <Stack.Screen name="Loading" component={LoadingScreen} />
     <Stack.Screen name="Login" component={LoginScreen} />
   </Stack.Navigator>
 );
