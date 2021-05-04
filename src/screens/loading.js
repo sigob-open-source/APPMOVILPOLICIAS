@@ -12,8 +12,8 @@ export default function Loading() {
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
-    let screenName = 'login';
-    const params = {};
+    let screenName = 'auth';
+    const params = { screen: 'Login' };
 
     if (accessToken) {
       screenName = 'home';
