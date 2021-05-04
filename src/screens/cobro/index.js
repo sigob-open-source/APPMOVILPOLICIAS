@@ -2,15 +2,17 @@
 import React, { useState } from 'react';
 import {
   SafeAreaView,
-  FlatList,
   TouchableWithoutFeedback,
 } from 'react-native';
 import styled from 'styled-components';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import Button from '../../components/button';
 import Header from '../../components/header';
 import { primaryColor } from '../../utils/colors';
 import ListItem from './components/list-item';
+import { SCREEN_WIDTH } from '../../utils/constants';
 
 const DATA = [
   {
@@ -48,6 +50,28 @@ const DATA = [
 export default function CobroScreen() {
   // States
   const [metodoDePago, setMetodoDePago] = useState(1);
+
+  const [listData, setListData] = useState(DATA);
+
+  const onSwipeValueChange = (swipeData) => {
+    const { key, value } = swipeData;
+
+    if (value < -(SCREEN_WIDTH * 0.75)) {
+      deleteItemById(parseInt(key, 10));
+    }
+  };
+
+  const renderHiddenItem = ({ item }) => (
+    <DeleteContainer>
+      <TouchableWithoutFeedback onPress={() => deleteItemById(item.id)}>
+        <Icon name="ios-trash-outline" color="#ffffff" size={30} />
+      </TouchableWithoutFeedback>
+    </DeleteContainer>
+  );
+
+  const deleteItemById = (id) => {
+    setListData(listData.filter((x) => x.id !== id));
+  };
 
   return (
     <Container>
@@ -94,16 +118,16 @@ export default function CobroScreen() {
         </TotalContainer>
 
         <ListContainer>
-          <FlatList
-            contentContainerStyle={{ flex: 1 }}
-            data={DATA}
+          <SwipeListView
+            data={listData}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <ListItem
-                item={item}
-                onPress={() => {}}
-              />
-            )}
+            disableRightSwipe
+            friction={10}
+            onSwipeValueChange={onSwipeValueChange}
+            renderHiddenItem={renderHiddenItem}
+            renderItem={({ item }) => <ListItem item={item} />}
+            rightOpenValue={-100}
+            useNativeDriver={false}
             ItemSeparatorComponent={Separator}
           />
         </ListContainer>
@@ -129,7 +153,7 @@ const Content = styled.View`
   padding-horizontal: 15px;
 `;
 
-const ButtonContainer = styled(SafeAreaView)`
+export const ButtonContainer = styled(SafeAreaView)`
   padding-horizontal: 15px;
   padding-vertical: 30px;
   elevation: 5;
@@ -138,7 +162,7 @@ const ButtonContainer = styled(SafeAreaView)`
   border-top-color: #F0F0F0;
 `;
 
-const ListContainer = styled.View`
+export const ListContainer = styled.View`
   flex: 1;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -148,7 +172,7 @@ const ListContainer = styled.View`
   background-color: #ffffff;
 `;
 
-const Separator = styled.View`
+export const Separator = styled.View`
   width: 100%;
   height: 1px;
   background-color: #F0F0F0;
@@ -188,10 +212,21 @@ const Tab = styled.View`
   background-color: ${(props) => (props.isSelected ? primaryColor : '#ffffff')}
   justify-content: center;
   align-items: center;
-  `;
+`;
 
 const TabText = styled(NormalText)`
   text-align: center;
   color: ${(props) => (props.isSelected ? '#ffffff' : '#737176')}
   text-transform: uppercase;
+`;
+
+const DeleteContainer = styled.View`
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: red;
+  align-items: flex-end;
+  justify-content: center;
+  padding-right: 32px;
 `;
