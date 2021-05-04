@@ -2,8 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import DropdownAlert from 'react-native-dropdownalert';
 
 // Utilities
 import { bgColor, primaryColor } from './src/utils/colors';
@@ -19,6 +20,7 @@ import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
 import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
 import InfraccionesScreen from './src/screens/infracciones';
 import LoadingScreen from './src/screens/loading';
+import { clearNotificationAction } from './src/store/actions/app';
 
 // Setup
 const theme = {
@@ -57,6 +59,7 @@ const AppNavigation = () => {
 
   // Hooks
   const notification = useSelector((state) => state.app?.notification);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (notification && notification.message) {
@@ -68,12 +71,22 @@ const AppNavigation = () => {
     }
   }, [notification]);
 
+  const clearNotification = () => {
+    clearNotificationAction(dispatch);
+  };
+
   return (
     <>
       <Stack.Navigator headerMode="none">
         <Stack.Screen name="auth" component={AuthNavigation} />
         <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>
+
+      <DropdownAlert
+        ref={dropdownalert}
+        onClose={() => clearNotification()}
+        updateStatusBar={false}
+      />
     </>
   );
 };
