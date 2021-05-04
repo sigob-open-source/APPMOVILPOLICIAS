@@ -53,7 +53,7 @@ export default function VentaLogin() {
       return navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'loading' }],
+          routes: [{ name: 'Loading' }],
         }),
       );
     }

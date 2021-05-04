@@ -4,13 +4,16 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
+  Keyboard,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { CommonActions, useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components';
+import moment from 'moment';
+
+import { useDispatch } from 'react-redux';
 import Header from '../components/header';
 import { primaryColor } from '../utils/colors';
 import Button, { Text as ButtonText } from '../components/button';
@@ -20,21 +23,101 @@ import {
   TabText as TabTextBase,
 } from './cobro';
 
-export default function BusquedaDePlacas() {
+import { SearchButton, SearchContainer, SearchInput } from './infracciones';
+import { getCiudadanos } from '../services/ciudadanos';
+import { notificationAction } from '../store/actions/app';
+
+export default function BusquedaDePlacas({ route: { params } }) {
   // States
   const [hasDriverLicense, setHasDriverLicense] = useState(true);
+  const [ciudadano, setCiudadano] = useState(null);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Hooks
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   // Utils
   const goInfraccionesComunes = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'home', params: { screen: 'InfraccionesComunes' } }],
-      }),
-    );
+    if (hasDriverLicense && !ciudadano) {
+      notificationAction(dispatch, {
+        type: 'error',
+        title: 'Error',
+        message: 'No se ha ingresado la licencia de conducir.',
+      });
+    } else {
+      navigation.navigate('InfraccionesComunes', {
+        ...params,
+        ciudadano,
+      });
+    }
+  };
+
+  const getCiudadano = async () => {
+    setLoading(true);
+    const _search = search.trim();
+
+    let found = false;
+    if (_search) {
+      const response = await getCiudadanos({
+        licencia_de_conducir: _search,
+      });
+
+      if (Array.isArray(response) && response.length > 0) {
+        found = true;
+        setCiudadano(response[0]);
+      }
+    }
+
+    if (!found) {
+      notificationAction(dispatch, {
+        type: 'error',
+        title: 'Error',
+        message: 'No se encontró el ciudadano.',
+      });
+    }
+    setSearch('');
+    setLoading(false);
+    Keyboard.dismiss();
+  };
+
+  const getNombreCompleto = () => {
+    let output = '';
+
+    if (ciudadano) {
+      if (ciudadano.first_name) {
+        output += ciudadano.first_name;
+      }
+
+      if (ciudadano.last_name) {
+        if (output) {
+          output += ' ';
+        }
+        output += ciudadano.last_name;
+      }
+
+      if (ciudadano.second_last_name) {
+        if (output) {
+          output += ' ';
+        }
+        output += ciudadano.second_last_name;
+      }
+    }
+
+    return output;
+  };
+
+  const getEdad = () => {
+    let output = '';
+
+    if (ciudadano) {
+      const now = moment();
+      const birthday = moment(ciudadano.fecha_nacimiento, 'YYYY-MM-DD');
+
+      output = now.diff(birthday, 'years');
+    }
+    return output;
   };
 
   return (
@@ -43,7 +126,7 @@ export default function BusquedaDePlacas() {
         goBack
         title="DATOS DEL CONDUCTOR"
       />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="always">
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -82,37 +165,60 @@ export default function BusquedaDePlacas() {
           </TabsContainer>
         </View>
 
-        <View style={styles.searchInput}>
-          <TextInput
-            placeholder="Buscar Placas..."
-            placeholderTextColor="#CBCBCB"
-            style={{ color: '#000000' }}
-          />
-        </View>
+        {
+          hasDriverLicense && (
+            <SearchContainer>
+              <SearchInput
+                value={search}
+                onChangeText={setSearch}
+                placeholder="Buscar número de licencia..."
+                placeholderTextColor="#CBCBCB"
+                returnKeyType="search"
+                autoCapitalize="characters"
+                onSubmitEditing={getCiudadano}
+              />
+              <TouchableWithoutFeedback onPress={getCiudadano} disabled={loading}>
+                <SearchButton>
+                  <Icon name="ios-search-outline" size={30} color="#A8A4AE" />
+                </SearchButton>
+              </TouchableWithoutFeedback>
+            </SearchContainer>
+          )
+        }
 
-        <View style={styles.ciudadanoContainer}>
-          <View style={styles.nombreCiudano}>
-            <Text>Nombre:</Text>
-            <Text style={styles.titulo}>Abiel Oswaldo Robledo Montoya</Text>
-          </View>
+        {
+          Boolean(ciudadano) && (
 
-          <View style={{ flexDirection: 'row', marginTop: 20 }}>
-            <View style={{ flex: 1 }}>
-              <Text>
-                Edad:
-              </Text>
-
-              <Text>
-                Mexicali B.C
+          <View style={styles.ciudadanoContainer}>
+            <View style={styles.nombreCiudano}>
+              <Text>Nombre:</Text>
+              <Text style={styles.titulo}>
+                {getNombreCompleto()}
               </Text>
             </View>
-            <View style={styles.statusCuidadanos}>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>
-                Vencida
-              </Text>
+
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+              <View style={{ flex: 1 }}>
+                <Text>
+                  Edad:
+                  {' '}
+                  {getEdad()}
+                </Text>
+                {/*
+                <Text>
+                  Mexicali B.C
+                </Text> */}
+              </View>
+              {/* <View style={styles.statusCuidadanos}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>
+                  Vencida
+                </Text>
+              </View> */}
             </View>
           </View>
-        </View>
+          )
+        }
+
       </ScrollView>
 
       <Button
@@ -133,7 +239,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: 15,
   },
   txtTabs: {
     margin: 10,

@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -9,80 +9,72 @@ import { useNavigation } from '@react-navigation/native';
 import ListItem from './components/list-item';
 import Header from '../../components/header';
 import Button, { Text as ButtonText } from '../../components/button';
+import { getCargos } from '../../services/tipos-de-cargo';
 
-const DATA = [
-  {
-    id: 1,
-    clave: 'A12',
-    descripcion: 'No respetar seña de alto',
-    sm: 15,
-  },
-  {
-    id: 2,
-    clave: 'A22',
-    descripcion: 'Conducir en exceso de velocidad',
-    sm: 30,
-  },
-  {
-    id: 3,
-    clave: 'A10',
-    descripcion: 'Conducir en estado de ebriedad',
-    sm: 10,
-  },
-  {
-    id: 4,
-    clave: 'A05',
-    descripcion: 'No traer puesto el cinturón de seguridad.Lorem ea in labore do eu dolor dolor.Pariatur exercitation laborum mollit deserunt eiusmod nulla cillum ipsum commodo ad officia.',
-    sm: 5,
-  },
-  {
-    id: 5,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-];
-
-export default function InfraccionesComunesScreen() {
-  // Refs
+export default function InfraccionesComunesScreen({ route: { params } }) {
+  // States
   const [selectedItems, setSelectedItems] = useState({});
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Hooks
   const navigation = useNavigation();
 
-  const toggleSelect = (idx) => {
+  const toggleSelect = (idx, item) => {
     const copy = { ...selectedItems };
     if (copy[idx]) {
       delete copy[idx];
     } else {
-      copy[idx] = true;
+      copy[idx] = item;
     }
     setSelectedItems(copy);
+  };
+
+  const getData = async () => {
+    setLoading(true);
+    const response = await getCargos({
+      page: 1,
+    });
+
+    setData(response);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const navigate = (screenName) => {
+    navigation.navigate(screenName, {
+      ...params,
+      cargos: selectedItems,
+    });
   };
 
   return (
     <Container>
       <Header
-        goBack
         title="INFRACCIONES COMUNES"
       />
 
       <FlatList
-        style={{ flex: 1, paddingTop: 10 }}
-        data={DATA}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: 10, paddingBottom: 20 }}
+        data={data}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
           <ListItem
-            isSelected={selectedItems[index]}
+            isSelected={Boolean(selectedItems[index])}
             item={item}
-            onPress={() => toggleSelect(index)}
+            onPress={() => toggleSelect(index, item)}
           />
         )}
       />
 
       <Button
-        onPress={() => navigation.navigate('Infracciones')}
+        onPress={() => navigate('Infracciones')}
         style={{ marginBottom: 15 }}
+        disabled={loading}
       >
         <Icon name="ios-add-circle-outline" size={30} color="#ffffff" />
         <ButtonText>
@@ -92,8 +84,10 @@ export default function InfraccionesComunesScreen() {
 
       <SafeAreaView style={{ paddingBottom: 15 }}>
         <Button
-          onPress={() => navigation.navigate('Cobro')}
-          text="CONTINUAR"
+          onPress={() => navigate('Cobro')}
+          // onPress={() => navigation.navigate('Cobro')}
+          text="COBRAR"
+          disabled={loading}
         />
       </SafeAreaView>
     </Container>

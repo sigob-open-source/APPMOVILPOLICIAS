@@ -66,7 +66,7 @@ export default function VentaLogin() {
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: 15,
   },
   generarMulta: {
     marginTop: 20,

@@ -4,13 +4,15 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   ScrollView,
   TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components';
+import Icon from 'react-native-vector-icons/Ionicons';
 
+import { useDispatch } from 'react-redux';
 import Header from '../components/header';
 import { primaryColor } from '../utils/colors';
 import Button from '../components/button';
@@ -19,23 +21,79 @@ import {
   TabsContainer,
   TabText as TabTextBase,
 } from './cobro';
+import { SearchButton, SearchContainer, SearchInput } from './infracciones';
+import { createVehiculo, getVehiculos } from '../services/vehiculo';
+import { notificationAction } from '../store/actions/app';
 
 export default function BusquedaDePlacas() {
   // Refs
   const [selectedTab, setSelectedTab] = useState(1);
 
   // States
-  const [plates, setPlates] = useState();
+  const [search, setSearch] = useState('');
+  const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Hooks
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   // Utilities
   const goBuscarCiudadano = () => {
-    setLoading(true);
+    if (!car) {
+      notificationAction(dispatch, {
+        type: 'warn',
+        title: 'Alerta',
+        message: 'No ha ingresado los datos de las placas.',
+      });
+    } else {
+      navigation.navigate('BusquedaDeCiudadano', {
+        car,
+      });
+    }
+  };
 
-    navigation.navigate('BusquedaDeCiudadano');
+  const getVehiculo = async () => {
+    setLoading(true);
+    const _search = search.trim();
+
+    let found = false;
+    if (_search) {
+      const params = {};
+      if (selectedTab < 4) {
+        params.numero_de_placa = _search;
+      } else {
+        params.serie = _search;
+      }
+
+      const response = await getVehiculos(params);
+
+      if (Array.isArray(response) && response.length > 0) {
+        found = true;
+        setCar(response[0]);
+      } else {
+        const createResponse = await createVehiculo(
+          selectedTab < 4 ? _search : null,
+          selectedTab === 4 ? _search : null,
+        );
+
+        if (createResponse) {
+          found = true;
+          setCar(createResponse);
+        }
+      }
+    }
+
+    if (!found) {
+      notificationAction(dispatch, {
+        type: 'error',
+        title: 'Error',
+        message: 'No se encontró el vehículo.',
+      });
+    }
+    setSearch('');
+    setLoading(false);
+    Keyboard.dismiss();
   };
 
   return (
@@ -46,7 +104,7 @@ export default function BusquedaDePlacas() {
       />
 
       <View style={styles.Container}>
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always">
           <TabsContainer>
             <TouchableWithoutFeedback
               onPress={() => setSelectedTab(1)}
@@ -96,31 +154,53 @@ export default function BusquedaDePlacas() {
 
           </TabsContainer>
 
-          <View style={styles.searchInput}>
-            <TextInput
-              value={plates}
-              onChangeText={setPlates}
-              placeholder="Buscar Placas..."
+          <SearchContainer>
+            <SearchInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder={`Buscar ${selectedTab < 4 ? 'Placas' : 'Número de serie'}...`}
               placeholderTextColor="#CBCBCB"
-              style={{ color: '#000000' }}
+              returnKeyType="search"
+              autoCapitalize="characters"
+              onSubmitEditing={getVehiculo}
             />
-          </View>
+            <TouchableWithoutFeedback onPress={getVehiculo} disabled={loading}>
+              <SearchButton>
+                <Icon name="ios-search-outline" size={30} color="#A8A4AE" />
+              </SearchButton>
+            </TouchableWithoutFeedback>
+          </SearchContainer>
 
-          <Text style={styles.titulo}>
-            271-NSF2
-          </Text>
+          {
+            Boolean(car) && (
+              <>
+                <Text style={styles.titulo}>
+                  {
+                    car.numero_de_placa || car.serie
+                  }
+                </Text>
 
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.subTitle}>Marca:</Text>
-            <Text style={styles.subTitleModelo}>Modelo:</Text>
-          </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.subTitle}>Marca:</Text>
+                  <Text style={styles.subTitleModelo}>Modelo:</Text>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={[styles.subTitle, { color: primaryColor }]}>
+                    No disponible
+                  </Text>
+                  <Text style={[styles.subTitleModelo, { color: primaryColor }]}>
+                    No disponible
+                  </Text>
+                </View>
+              </>
+            )
+          }
         </ScrollView>
 
         <Button
           onPress={goBuscarCiudadano}
           style={{ marginBottom: 20, marginTop: 20 }}
           text="CONTINUAR"
-          loading={loading}
         />
       </View>
     </>
@@ -130,7 +210,7 @@ export default function BusquedaDePlacas() {
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: 15,
   },
   searchInput: {
     backgroundColor: '#ffffff',

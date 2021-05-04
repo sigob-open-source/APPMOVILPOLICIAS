@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   TouchableWithoutFeedback,
@@ -8,50 +8,38 @@ import styled from 'styled-components';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 import Button from '../../components/button';
 import Header from '../../components/header';
 import { primaryColor } from '../../utils/colors';
 import ListItem from './components/list-item';
 import { SCREEN_WIDTH } from '../../utils/constants';
+import { createCargo } from '../../services/cargos';
+import { generarPago } from '../../services/recibo';
+import { logger } from '../../utils/logger';
+import { notificationAction } from '../../store/actions/app';
+import { getUmas } from '../../services/umas';
 
-const DATA = [
-  {
-    id: 1,
-    clave: 'A12',
-    descripcion: 'No respetar seña de alto',
-    sm: 15,
-  },
-  {
-    id: 2,
-    clave: 'A22',
-    descripcion: 'Conducir en exceso de velocidad',
-    sm: 30,
-  },
-  {
-    id: 3,
-    clave: 'A10',
-    descripcion: 'Conducir en estado de ebriedad',
-    sm: 10,
-  },
-  {
-    id: 4,
-    clave: 'A05',
-    descripcion: 'No traer puesto el cinturón de seguridad.Lorem ea in labore do eu dolor dolor.Pariatur exercitation laborum mollit deserunt eiusmod nulla cillum ipsum commodo ad officia.',
-    sm: 5,
-  },
-  {
-    id: 5,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-];
-
-export default function CobroScreen() {
+export default function CobroScreen({ route: { params } }) {
   // States
   const [metodoDePago, setMetodoDePago] = useState(1);
+  const [listData, setListData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [uma, setUma] = useState(0);
 
-  const [listData, setListData] = useState(DATA);
+  // Hooks
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getUma();
+    setListData(Object.values(params.cargos));
+  }, []);
+
+  const getUma = async () => {
+    const response = await getUmas();
+    setUma(response[response.length - 1]?.valor_diario ?? 0);
+  };
 
   const onSwipeValueChange = (swipeData) => {
     const { key, value } = swipeData;
@@ -71,6 +59,57 @@ export default function CobroScreen() {
 
   const deleteItemById = (id) => {
     setListData(listData.filter((x) => x.id !== id));
+  };
+
+  const getTotal = () => listData.reduce((p, c) => p + (uma * c.importe_maximo), 0);
+
+  const calcular = async () => {
+    setLoading(true);
+
+    const calls = [];
+    for (let i = 0; i < listData.length; i++) {
+      calls.push(createCargo(
+        listData[i].id,
+        listData[i].importe,
+        params.car.id,
+      ));
+    }
+
+    const responseCargos = await Promise.all(calls);
+
+    const response = await generarPago(
+      params.car.id,
+      responseCargos.map((x) => x.id),
+      responseCargos.reduce((p, x) => p + x.importe, 0),
+    );
+
+    if (response) {
+      logger(response.recibos[0].id);
+      // Generar ticket
+      notificationAction(dispatch, {
+        type: 'success',
+        title: 'Pago realizado',
+        message: `El pago se ha procesado exitosamente (Recibo #${response.recibos[0].id})`,
+      });
+    } else {
+      notificationAction(dispatch, {
+        type: 'error',
+        title: 'Error',
+        message: 'No se pudo generar el pago',
+      });
+    }
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'MenuPrincipal',
+            params: {},
+          },
+        ],
+      }),
+    );
+    setLoading(false);
   };
 
   return (
@@ -113,12 +152,14 @@ export default function CobroScreen() {
           </BoldText>
 
           <BoldText style={{ fontSize: 20, textAlign: 'right' }}>
-            $1,750189.00
+            $
+            {getTotal().toFixed(2)}
           </BoldText>
         </TotalContainer>
 
         <ListContainer>
           <SwipeListView
+            disableLeftSwipe={loading}
             data={listData}
             keyExtractor={(item) => item.id.toString()}
             disableRightSwipe
@@ -135,7 +176,9 @@ export default function CobroScreen() {
       </Content>
       <ButtonContainer>
         <Button
-          onPress={() => {}}
+          loading={loading}
+          // onPress={() => {}}
+          onPress={calcular}
           text="COBRAR"
         />
       </ButtonContainer>

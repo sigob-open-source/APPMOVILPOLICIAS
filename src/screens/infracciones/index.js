@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableWithoutFeedback,
   ScrollView,
@@ -15,73 +15,63 @@ import Button, { Text as ButtonText } from '../../components/button';
 
 import { Separator, ListContainer, ButtonContainer } from '../cobro';
 import ListItem from '../cobro/components/list-item';
+import { getCargos } from '../../services/tipos-de-cargo';
+import { useDebounce } from '../../utils/hooks';
 
-const DATA = [
-  {
-    id: 1,
-    clave: 'A12',
-    descripcion: 'No respetar seña de alto',
-    sm: 15,
-  },
-  {
-    id: 2,
-    clave: 'A22',
-    descripcion: 'Conducir en exceso de velocidad',
-    sm: 30,
-  },
-  {
-    id: 3,
-    clave: 'A10',
-    descripcion: 'Conducir en estado de ebriedad',
-    sm: 10,
-  },
-  {
-    id: 4,
-    clave: 'A05',
-    descripcion: 'No traer puesto el cinturón de seguridad.Lorem ea in labore do eu dolor dolor.Pariatur exercitation laborum mollit deserunt eiusmod nulla cillum ipsum commodo ad officia.',
-    sm: 5,
-  },
-  {
-    id: 5,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-  {
-    id: 6,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-  {
-    id: 7,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-  {
-    id: 8,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-  {
-    id: 9,
-    clave: 'AB12',
-    descripcion: 'Uso del celular al conducir',
-    sm: 12,
-  },
-];
-
-export default function InfraccionesScreen() {
+export default function InfraccionesScreen({ route: { params } }) {
   // states
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItems, setSelectedItems] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [listData, setListData] = useState([]);
+  const [search, setSearch] = useState('');
 
   // Hooks
   const navigation = useNavigation();
+  const debouncedSearch = useDebounce(search, 1200);
+
+  const getData = async () => {
+    setLoading(true);
+    const response = await getCargos();
+
+    setData(response);
+    setLoading(false);
+    setSearch('');
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    setListData(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      const regexp = new RegExp(debouncedSearch, 'ig');
+      setListData(data.filter((x) => regexp.test(x.descripcion)));
+    } else {
+      setListData(data);
+    }
+  }, [debouncedSearch]);
 
   const addCharge = () => {
+    const copy = { ...selectedItems, [selectedItem.id]: selectedItem };
+    setSelectedItems(copy);
+    setData(data.filter((x) => x.id !== selectedItem.id));
     setSelectedItem(null);
+  };
+
+  const navigate = () => {
+    navigation.navigate('Cobro', {
+      ...params,
+      cargos: {
+        ...params.cargos,
+        ...selectedItems,
+      },
+    });
   };
 
   return (
@@ -94,6 +84,8 @@ export default function InfraccionesScreen() {
 
         <SearchContainer>
           <SearchInput
+            value={search}
+            onChangeText={setSearch}
             placeholder="Inciso"
             placeholderTextColor="#CBCBCB"
           />
@@ -116,7 +108,7 @@ export default function InfraccionesScreen() {
 
                 <ChargeTotalContainer>
                   <ChargeTotal>
-                    {selectedItem.sm}
+                    {selectedItem.importe}
                   </ChargeTotal>
                   <ChargeUnit>
                     SALARIOS
@@ -141,7 +133,7 @@ export default function InfraccionesScreen() {
 
         <ListContainer>
           <FlatList
-            data={DATA}
+            data={listData}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <TouchableHighlight onPress={() => setSelectedItem(item)}>
@@ -156,8 +148,9 @@ export default function InfraccionesScreen() {
 
       <ButtonContainer>
         <Button
-          onPress={() => navigation.navigate('Cobro')}
+          onPress={navigate}
           text="COBRAR"
+          disabled={loading}
         />
       </ButtonContainer>
     </Container>
@@ -172,7 +165,7 @@ const Content = styled(Container)`
   padding-horizontal: 15px;
 `;
 
-const SearchContainer = styled.View`
+export const SearchContainer = styled.View`
   height: 55px;
   width: 100%;
   flex-direction: row;
@@ -184,14 +177,14 @@ const SearchContainer = styled.View`
   margin-bottom: 10px;
 `;
 
-const SearchInput = styled.TextInput`
+export const SearchInput = styled.TextInput`
   flex: 1;
   padding-left: 20px;
   font-size: 16px;
   color: #000000;
 `;
 
-const SearchButton = styled.View`
+export const SearchButton = styled.View`
   width: 55px;
   height: 100%;
   justify-content: center;
