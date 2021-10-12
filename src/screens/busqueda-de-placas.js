@@ -11,8 +11,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import { useDispatch } from 'react-redux';
+
 import Header from '../components/header';
 import { primaryColor } from '../utils/colors';
 import Button from '../components/button';
@@ -25,7 +25,7 @@ import { SearchButton, SearchContainer, SearchInput } from './infracciones';
 import { createVehiculo, getVehiculos } from '../services/vehiculo';
 import { notificationAction } from '../store/actions/app';
 
-export default function BusquedaDePlacas() {
+const BusquedaDePlacasScreen = () => {
   // Refs
   const [selectedTab, setSelectedTab] = useState(1);
 
@@ -47,7 +47,7 @@ export default function BusquedaDePlacas() {
         message: 'No ha ingresado los datos de las placas.',
       });
     } else {
-      navigation.navigate('BusquedaDeCiudadano', {
+      navigation.navigate('busqueda-de-ciudadano', {
         car,
       });
     }
@@ -205,7 +205,7 @@ export default function BusquedaDePlacas() {
       </View>
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
@@ -242,3 +242,5 @@ const styles = StyleSheet.create({
 const TabText = styled(TabTextBase)`
   font-size: 12px;
 `;
+
+export default BusquedaDePlacasScreen;

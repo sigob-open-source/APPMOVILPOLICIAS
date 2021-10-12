@@ -72,7 +72,7 @@ export default function InfraccionesComunesScreen({ route: { params } }) {
       />
 
       <Button
-        onPress={() => navigate('Infracciones')}
+        onPress={() => navigate('infracciones')}
         style={{ marginBottom: 15 }}
         disabled={loading}
       >
@@ -84,8 +84,8 @@ export default function InfraccionesComunesScreen({ route: { params } }) {
 
       <SafeAreaView style={{ paddingBottom: 15 }}>
         <Button
-          onPress={() => navigate('Cobro')}
-          // onPress={() => navigation.navigate('Cobro')}
+          onPress={() => navigate('cobro')}
+          // onPress={() => navigation.navigate('cobro')}
           text="COBRAR"
           disabled={loading}
         />

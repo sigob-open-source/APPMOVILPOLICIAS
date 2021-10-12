@@ -27,7 +27,7 @@ import { SearchButton, SearchContainer, SearchInput } from './infracciones';
 import { getCiudadanos } from '../services/ciudadanos';
 import { notificationAction } from '../store/actions/app';
 
-export default function BusquedaDePlacas({ route: { params } }) {
+const BusquedaDeCiudadanoScreen = ({ route: { params } }) => {
   // States
   const [hasDriverLicense, setHasDriverLicense] = useState(true);
   const [ciudadano, setCiudadano] = useState(null);
@@ -47,7 +47,7 @@ export default function BusquedaDePlacas({ route: { params } }) {
         message: 'No se ha ingresado la licencia de conducir.',
       });
     } else {
-      navigation.navigate('InfraccionesComunes', {
+      navigation.navigate('infracciones-comunes', {
         ...params,
         ciudadano,
       });
@@ -231,7 +231,7 @@ export default function BusquedaDePlacas({ route: { params } }) {
       </Button>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
@@ -306,3 +306,5 @@ const Tab = styled(TabBase)``;
 const TabText = styled(TabTextBase)`
   font-size: 12px;
 `;
+
+export default BusquedaDeCiudadanoScreen;

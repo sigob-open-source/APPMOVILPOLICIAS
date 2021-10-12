@@ -9,13 +9,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { useNavigation } from '@react-navigation/native';
 import { primaryColor } from '../utils/colors';
+
 import Header from '../components/header';
 
-export default function VentaLogin() {
+const MenuPrincicpalScreen = () => {
   const navigation = useNavigation();
 
   const goBusqueda = () => {
-    navigation.navigate('BusquedasDePlacas');
+    navigation.navigate('busquedas-de-placas');
   };
 
   return (
@@ -61,7 +62,7 @@ export default function VentaLogin() {
       </View>
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
@@ -79,3 +80,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 });
+
+export default MenuPrincicpalScreen;

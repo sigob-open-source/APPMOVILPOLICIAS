@@ -7,9 +7,9 @@ import {
 import styled from 'styled-components';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
+
 import Button from '../../components/button';
 import Header from '../../components/header';
 import { primaryColor } from '../../utils/colors';
@@ -21,7 +21,7 @@ import { logger } from '../../utils/logger';
 import { notificationAction } from '../../store/actions/app';
 import { getUmas } from '../../services/umas';
 
-export default function CobroScreen({ route: { params } }) {
+const CobroScreen = ({ route: { params } }) => {
   // States
   const [metodoDePago, setMetodoDePago] = useState(1);
   const [listData, setListData] = useState([]);
@@ -103,7 +103,7 @@ export default function CobroScreen({ route: { params } }) {
         index: 0,
         routes: [
           {
-            name: 'MenuPrincipal',
+            name: 'menu-principal',
             params: {},
           },
         ],
@@ -184,7 +184,7 @@ export default function CobroScreen({ route: { params } }) {
       </ButtonContainer>
     </Container>
   );
-}
+};
 
 const Container = styled.View`
   flex: 1;
@@ -273,3 +273,5 @@ const DeleteContainer = styled.View`
   justify-content: center;
   padding-right: 32px;
 `;
+
+export default CobroScreen;
