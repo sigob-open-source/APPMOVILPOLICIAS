@@ -10,17 +10,17 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { bgColor, primaryColor } from './src/utils/colors';
 import { store, persistor } from './src/store';
 import { navigationRef } from './src/utils/navigation';
+import { clearNotificationAction } from './src/store/actions/app';
 
 // Screens
-import LoginScreen from './src/screens/Login';
+import LoginScreen from './src/screens/login';
 import InfraccionesComunesScreen from './src/screens/infracciones-comunes';
-import MenuPrincipalScreen from './src/screens/MenuPrincicpal';
+import MenuPrincipalScreen from './src/screens/menu-princicpal';
 import CobroScreen from './src/screens/cobro';
-import BusquedaDePlacasScreen from './src/screens/BusquedaDePlacas';
-import BusquedaDeCiudadanoScreen from './src/screens/BusquedaDeCiudadano';
+import BusquedaDePlacasScreen from './src/screens/busqueda-de-placas';
+import BusquedaDeCiudadanoScreen from './src/screens/busqueda-de-ciudadano';
 import InfraccionesScreen from './src/screens/infracciones';
 import LoadingScreen from './src/screens/loading';
-import { clearNotificationAction } from './src/store/actions/app';
 
 // Setup
 const theme = {
@@ -36,20 +36,20 @@ const Stack = createStackNavigator();
 
 // Navigators
 const AuthNavigation = () => (
-  <Stack.Navigator headerMode="none" initialRouteName="Loading">
-    <Stack.Screen name="Loading" component={LoadingScreen} />
-    <Stack.Screen name="Login" component={LoginScreen} />
+  <Stack.Navigator headerMode="none" initialRouteName="loading">
+    <Stack.Screen name="loading" component={LoadingScreen} />
+    <Stack.Screen name="login" component={LoginScreen} />
   </Stack.Navigator>
 );
 
 const HomeNavigation = () => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name="MenuPrincipal" component={MenuPrincipalScreen} />
-    <Stack.Screen name="BusquedasDePlacas" component={BusquedaDePlacasScreen} />
-    <Stack.Screen name="BusquedaDeCiudadano" component={BusquedaDeCiudadanoScreen} />
-    <Stack.Screen name="Infracciones" component={InfraccionesScreen} />
-    <Stack.Screen name="InfraccionesComunes" component={InfraccionesComunesScreen} />
-    <Stack.Screen name="Cobro" component={CobroScreen} />
+    <Stack.Screen name="menu-principal" component={MenuPrincipalScreen} />
+    <Stack.Screen name="busquedas-de-placas" component={BusquedaDePlacasScreen} />
+    <Stack.Screen name="busqueda-de-ciudadano" component={BusquedaDeCiudadanoScreen} />
+    <Stack.Screen name="infracciones" component={InfraccionesScreen} />
+    <Stack.Screen name="infracciones-comunes" component={InfraccionesComunesScreen} />
+    <Stack.Screen name="cobro" component={CobroScreen} />
   </Stack.Navigator>
 );
 

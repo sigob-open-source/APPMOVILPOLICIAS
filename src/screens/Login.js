@@ -18,7 +18,7 @@ import { login } from '../services/auth';
 import { notificationAction } from '../store/actions/app';
 import { dispatchLogin } from '../store/actions/auth';
 
-export default function VentaLogin() {
+const LoginScreen = () => {
   // Refs
   const passwordInput = useRef();
 
@@ -53,7 +53,7 @@ export default function VentaLogin() {
       return navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Loading' }],
+          routes: [{ name: 'loading' }],
         }),
       );
     }
@@ -114,7 +114,7 @@ export default function VentaLogin() {
       </TouchableWithoutFeedback>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   Container: {
@@ -155,3 +155,5 @@ const styles = StyleSheet.create({
     width: '95%',
   },
 });
+
+export default LoginScreen;

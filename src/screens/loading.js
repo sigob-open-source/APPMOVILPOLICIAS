@@ -6,18 +6,18 @@ import styled from 'styled-components';
 
 import { primaryColor } from '../utils/colors';
 
-export default function Loading() {
+const LoadingScreen = () => {
   // Hooks
   const navigation = useNavigation();
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
     let screenName = 'auth';
-    const params = { screen: 'Login' };
+    const params = { screen: 'login' };
 
     if (accessToken) {
       screenName = 'home';
-      params.screen = 'MenuPrincipal';
+      params.screen = 'menu-principal';
     }
 
     navigation.dispatch(
@@ -38,10 +38,12 @@ export default function Loading() {
       <ActivityIndicator color={primaryColor} size="large" />
     </Container>
   );
-}
+};
 
 const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
 `;
+
+export default LoadingScreen;

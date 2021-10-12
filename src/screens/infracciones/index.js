@@ -65,7 +65,7 @@ export default function InfraccionesScreen({ route: { params } }) {
   };
 
   const navigate = () => {
-    navigation.navigate('Cobro', {
+    navigation.navigate('cobro', {
       ...params,
       cargos: {
         ...params.cargos,
