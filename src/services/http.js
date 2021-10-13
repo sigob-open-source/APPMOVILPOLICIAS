@@ -3,12 +3,16 @@ import axios from 'axios';
 
 import { store } from '../store';
 import { dispatchClearAuth, dispatchSetToken } from '../store/actions/auth';
+import { logger } from '../utils/logger';
 import { navigateWithReset } from '../utils/navigation';
 
 // Configuration
 export const API_SCHEMA = 'https';
 export const API_HOST = 'apigrp.migob.mx/';
 export const API_PATH = '';
+// export const API_SCHEMA = 'http';
+// export const API_HOST = '192.168.1.79:2000/';
+// export const API_PATH = '';
 
 export const httpConfig = {
   baseURL: `${API_SCHEMA}://${API_HOST}${API_PATH}`,
@@ -42,7 +46,7 @@ const refreshToken = async (token) => {
     );
     return response?.data?.access;
   } catch (error) {
-    console.error(error);
+    logger('[refreshToken]', error);
   }
   return null;
 };

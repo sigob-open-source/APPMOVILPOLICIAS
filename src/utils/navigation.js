@@ -1,13 +1,13 @@
 import { CommonActions } from '@react-navigation/native';
 import React from 'react';
 
-export const navigationRef = React.createRef();
+const navigationRef = React.createRef();
 
-export function navigate(name, params) {
+function navigate(name, params) {
   navigationRef.current?.navigate(name, params);
 }
 
-export function navigateWithReset(name, params = {}) {
+function navigateWithReset(name, params = {}) {
   navigationRef.current.dispatch(
     CommonActions.reset({
       index: 0,
@@ -20,3 +20,9 @@ export function navigateWithReset(name, params = {}) {
     }),
   );
 }
+
+export {
+  navigationRef,
+  navigate,
+  navigateWithReset,
+};

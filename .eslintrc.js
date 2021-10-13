@@ -1,16 +1,9 @@
 module.exports = {
   env: {
-    browser: true,
-    es6: true,
     es2021: true,
     jest: true,
   },
   extends: ['plugin:react/recommended', 'airbnb'],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-    __DEV__: 'readonly',
-  },
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -19,6 +12,9 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react'],
+  globals: {
+    __DEV__: 'readonly',
+  },
   rules: {
     'import/no-unresolved': [
       'error',
