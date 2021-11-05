@@ -1,19 +1,35 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import 'mx.com.netpay.sdk.SmartApiFactory';
-import 'mx.com.netpay.sdk.exceptions.SmartApiException';
-import 'mx.com.netpay.sdk.models';
-import { NativeModules, Button } from 'react-native';
+import { NativeModules } from 'react-native';
 
-const ImprimirCobroScreen = () => (
-  <Container>
-    <Text>
-      Imprimir cobro screen
-    </Text>
-  </Container>
-);
+const ImprimirCobroScreen = () => {
+  const printTicket = async () => {
+    const response = await NativeModules.RNNetPay.printTicket();
+    console.log(response);
+  }
 
-export default NewModuleButton;
+  const doTrans = async () => {
+    const response = await NativeModules.RNNetPay.doTrans();
+    console.log(response);
+  }
+  return (
+    <Container>
+      <Text>
+        Imprimir cobro screen
+      </Text>
+      <Button onPress={doTrans}>
+        <Text>
+          Hacer pago
+        </Text>
+      </Button>
+      <Button onPress={printTicket}> 
+        <Text>
+          Imprimir Ticket
+        </Text>
+      </Button>
+    </Container>
+  )
+};
 
 const Container = styled.View`
   flex: 1;
@@ -21,4 +37,12 @@ const Container = styled.View`
 
 const Text = styled.Text``;
 
+const Button = styled.TouchableWithOpacity`
+  background-color: blue;
+  width: 100%;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  margin-vertical: 10px;
+`;
 export default ImprimirCobroScreen;

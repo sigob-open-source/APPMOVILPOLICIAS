@@ -21,6 +21,7 @@ import BusquedaDePlacasScreen from './src/screens/busqueda-de-placas';
 import BusquedaDeCiudadanoScreen from './src/screens/busqueda-de-ciudadano';
 import InfraccionesScreen from './src/screens/infracciones';
 import LoadingScreen from './src/screens/loading';
+// import ImprimirCobro from './src/screens/imprimir-cobro';
 
 // Setup
 const theme = {
@@ -78,6 +79,7 @@ const AppNavigation = () => {
   return (
     <>
       <Stack.Navigator headerMode="none">
+        {/* <Stack.Screen name="test" component={ImprimirCobro} /> */}
         <Stack.Screen name="auth" component={AuthNavigation} />
         <Stack.Screen name="home" component={HomeNavigation} />
       </Stack.Navigator>
