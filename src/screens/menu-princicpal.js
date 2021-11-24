@@ -20,11 +20,7 @@ const MenuPrincicpalScreen = () => {
   const goBusqueda = () => {
     navigation.navigate('busquedas-de-placas');
   };
-  const printTicket = async () => {
-    const response = await NativeModules.RNNetPay.printTicket();
-    console.log(response);
-  }
-
+  
   const doTrans = async () => {
     const response = await NativeModules.RNNetPay.doTrans();
     console.log(response);
@@ -69,16 +65,6 @@ const MenuPrincicpalScreen = () => {
           </View>
           <Icon name="ios-finger-print" size={95} color="#ffffff" />
         </View>
-        <Button onPress={doTrans}>
-        <Text>
-          Hacer pago
-        </Text>
-      </Button>
-      <Button onPress={printTicket}> 
-        <Text>
-          Imprimir Ticket
-        </Text>
-      </Button>
       </View>
     </>
   );

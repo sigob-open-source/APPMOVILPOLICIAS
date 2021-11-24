@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   TouchableWithoutFeedback,
+  NativeModules,
 } from 'react-native';
 import styled from 'styled-components';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -20,6 +21,16 @@ import { generarPago } from '../../services/recibo';
 import { logger } from '../../utils/logger';
 import { notificationAction } from '../../store/actions/app';
 import { getUmas } from '../../services/umas';
+
+const printTicket = async () => {
+  const response = await NativeModules.RNNetPay.printTicket();
+  console.log(response);
+}
+
+const doTrans = async () => {
+  const response = await NativeModules.RNNetPay.doTrans();
+  console.log(response);
+}
 
 const CobroScreen = ({ route: { params } }) => {
   // States
@@ -75,8 +86,8 @@ const CobroScreen = ({ route: { params } }) => {
       ));
     }
 
-    const responseCargos = await Promise.all(calls);
-
+    let responseCargos = await Promise.all(calls);
+    responseCargos = responseCargos.reduce((previous, current)=>previous.concat(current), []);
     const response = await generarPago(
       params.car.id,
       responseCargos.map((x) => x.id),
@@ -85,7 +96,7 @@ const CobroScreen = ({ route: { params } }) => {
 
     if (response) {
       logger(response.recibos[0].id);
-      // Generar ticket
+      await NativeModules.RNNetPay.printTicket();
       notificationAction(dispatch, {
         type: 'success',
         title: 'Pago realizado',
@@ -177,7 +188,7 @@ const CobroScreen = ({ route: { params } }) => {
       <ButtonContainer>
         <Button
           loading={loading}
-          // onPress={() => {}}
+           onPress={doTrans}
           onPress={calcular}
           text="COBRAR"
         />
