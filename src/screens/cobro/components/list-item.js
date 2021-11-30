@@ -19,7 +19,7 @@ export default function ListItem({
     <Container>
       <ClaveContainer>
         <BoldText>
-          {item.clave}
+          {item.id}
         </BoldText>
       </ClaveContainer>
 
@@ -31,11 +31,11 @@ export default function ListItem({
 
       <TotalContainer style={{ flexDirection: 'row' }}>
         <BoldText>
+          $
           {String(item.importe).padStart(2, '0')}
         </BoldText>
         <BoldText>
           { ' ' }
-          UMA
         </BoldText>
         <Dot style={{ marginLeft: 10 }} />
       </TotalContainer>

@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import {
   SafeAreaView,
   TouchableWithoutFeedback,
@@ -44,8 +44,28 @@ const CobroScreen = ({ route: { params } }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     getUma();
-    setListData(Object.values(params.cargos));
+    generarCargos(Object.values(params.cargos)).then((cargos)=>{
+      setListData(cargos);
+    });
   }, []);
+
+  const generarCargos = async (tiposDeCargo) => {
+    const calls = [];
+    for (let i = 0; i < tiposDeCargo.length; i++) {
+      calls.push(createCargo(
+        tiposDeCargo[i].id,
+        tiposDeCargo[i].importe,
+        params.car.id,
+      ));
+    }
+
+    let responseCargos = await Promise.all(calls);
+    return responseCargos.reduce((previous, current)=>previous.concat(current), []);
+  }
+
+  const reprintTicket = () => {
+    navigation.navigate('reimpresion-ticket');
+  };
 
   const getUma = async () => {
     const response = await getUmas();
@@ -72,26 +92,18 @@ const CobroScreen = ({ route: { params } }) => {
     setListData(listData.filter((x) => x.id !== id));
   };
 
-  const getTotal = () => listData.reduce((p, c) => p + (uma * c.importe_maximo), 0);
+  const total = useMemo(()=>{
+    //return listData.reduce((p, c) => p + (uma * c.importe_maximo), 0);
+    return listData.reduce((p, x) => p + x?.importe??0, 0);
+  },[listData]);
 
   const calcular = async () => {
     setLoading(true);
 
-    const calls = [];
-    for (let i = 0; i < listData.length; i++) {
-      calls.push(createCargo(
-        listData[i].id,
-        listData[i].importe,
-        params.car.id,
-      ));
-    }
-
-    let responseCargos = await Promise.all(calls);
-    responseCargos = responseCargos.reduce((previous, current)=>previous.concat(current), []);
     const response = await generarPago(
       params.car.id,
-      responseCargos.map((x) => x.id),
-      responseCargos.reduce((p, x) => p + x.importe, 0),
+      listData.map((x) => x.id),
+      total,
     );
 
     if (response) {
@@ -114,7 +126,7 @@ const CobroScreen = ({ route: { params } }) => {
         index: 0,
         routes: [
           {
-            name: 'menu-principal',
+            name: 'reimpresion',
             params: {},
           },
         ],
@@ -164,7 +176,7 @@ const CobroScreen = ({ route: { params } }) => {
 
           <BoldText style={{ fontSize: 20, textAlign: 'right' }}>
             $
-            {getTotal().toFixed(2)}
+            {total.toFixed(2)}
           </BoldText>
         </TotalContainer>
 

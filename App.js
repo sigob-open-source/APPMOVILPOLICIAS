@@ -21,6 +21,7 @@ import BusquedaDePlacasScreen from './src/screens/busqueda-de-placas';
 import BusquedaDeCiudadanoScreen from './src/screens/busqueda-de-ciudadano';
 import InfraccionesScreen from './src/screens/infracciones';
 import LoadingScreen from './src/screens/loading';
+import ReimpresionTicketScreen from './src/screens/reimpresion-ticket';
 // import ImprimirCobro from './src/screens/imprimir-cobro';
 
 // Setup
@@ -51,6 +52,7 @@ const HomeNavigation = () => (
     <Stack.Screen name="infracciones" component={InfraccionesScreen} />
     <Stack.Screen name="infracciones-comunes" component={InfraccionesComunesScreen} />
     <Stack.Screen name="cobro" component={CobroScreen} />
+    <Stack.Screen name="reimpresion" component={ReimpresionTicketScreen} />
   </Stack.Navigator>
 );
 
