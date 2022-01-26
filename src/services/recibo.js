@@ -5,6 +5,8 @@ const BASE_URL = 'recaudacion/recibos/';
 
 const generarPago = async (vehiculo, cargos, importe) => {
   try {
+    console.log('mostrando importe');
+    console.log(importe);
     const response = await HTTP.post(BASE_URL, {
       padrones: [
         {

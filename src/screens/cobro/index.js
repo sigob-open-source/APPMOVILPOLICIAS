@@ -1,8 +1,9 @@
 // Dependencies
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   SafeAreaView,
   TouchableWithoutFeedback,
+  NativeModules,
 } from 'react-native';
 import styled from 'styled-components';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -21,6 +22,16 @@ import { logger } from '../../utils/logger';
 import { notificationAction } from '../../store/actions/app';
 import { getUmas } from '../../services/umas';
 
+const printTicket = async () => {
+  const response = await NativeModules.RNNetPay.printTicket();
+  console.log(response);
+};
+
+const doTrans = async () => {
+  const response = await NativeModules.RNNetPay.doTrans();
+  console.log(response);
+};
+
 const CobroScreen = ({ route: { params } }) => {
   // States
   const [metodoDePago, setMetodoDePago] = useState(1);
@@ -33,8 +44,28 @@ const CobroScreen = ({ route: { params } }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     getUma();
-    setListData(Object.values(params.cargos));
+    generarCargos(Object.values(params.cargos)).then((cargos) => {
+      setListData(cargos);
+    });
   }, []);
+
+  const generarCargos = async (tiposDeCargo) => {
+    const calls = [];
+    for (let i = 0; i < tiposDeCargo.length; i++) {
+      calls.push(createCargo(
+        tiposDeCargo[i].id,
+        tiposDeCargo[i].importe,
+        params.car.id,
+      ));
+    }
+
+    const responseCargos = await Promise.all(calls);
+    return responseCargos.reduce((previous, current) => previous.concat(current), []);
+  };
+
+  const reprintTicket = () => {
+    navigation.navigate('reimpresion-ticket');
+  };
 
   const getUma = async () => {
     const response = await getUmas();
@@ -61,36 +92,54 @@ const CobroScreen = ({ route: { params } }) => {
     setListData(listData.filter((x) => x.id !== id));
   };
 
-  const getTotal = () => listData.reduce((p, c) => p + (uma * c.importe_maximo), 0);
+  const total = useMemo(() =>
+    // return listData.reduce((p, c) => p + (uma * c.importe_maximo), 0);
+    listData.reduce((p, x) => p + x?.importe ?? 0, 0),
+  [listData]);
 
   const calcular = async () => {
     setLoading(true);
 
-    const calls = [];
-    for (let i = 0; i < listData.length; i++) {
-      calls.push(createCargo(
-        listData[i].id,
-        listData[i].importe,
-        params.car.id,
-      ));
-    }
-
-    const responseCargos = await Promise.all(calls);
-
     const response = await generarPago(
       params.car.id,
-      responseCargos.map((x) => x.id),
-      responseCargos.reduce((p, x) => p + x.importe, 0),
+      listData.map((x) => x.id),
+      total.toFixed(2),
     );
 
     if (response) {
-      logger(response.recibos[0].id);
-      // Generar ticket
-      notificationAction(dispatch, {
-        type: 'success',
-        title: 'Pago realizado',
-        message: `El pago se ha procesado exitosamente (Recibo #${response.recibos[0].id})`,
-      });
+      const paymentResponse = await NativeModules.RNNetPay.doTrans(total.toFixed(2));
+      console.log('entro a la 112');
+
+      if (paymentResponse.success) {
+        logger(response.recibos[0].id);
+        const ticketResponse = await NativeModules.RNNetPay.printTicket();
+
+        if (ticketResponse.success) {
+          notificationAction(dispatch, {
+            type: 'success',
+            title: 'Pago realizado',
+            message: `El pago se ha procesado exitosamente (Recibo #${response.recibos[0].id})`,
+          });
+
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'reimpresion',
+                  params: {},
+                },
+              ],
+            }),
+          );
+        } else {
+          notificationAction(dispatch, {
+            type: 'error',
+            title: 'Error',
+            message: 'No se pudo generar el Ticket',
+          });
+        }
+      }
     } else {
       notificationAction(dispatch, {
         type: 'error',
@@ -98,17 +147,6 @@ const CobroScreen = ({ route: { params } }) => {
         message: 'No se pudo generar el pago',
       });
     }
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'menu-principal',
-            params: {},
-          },
-        ],
-      }),
-    );
     setLoading(false);
   };
 
@@ -153,7 +191,7 @@ const CobroScreen = ({ route: { params } }) => {
 
           <BoldText style={{ fontSize: 20, textAlign: 'right' }}>
             $
-            {getTotal().toFixed(2)}
+            {total.toFixed(2)}
           </BoldText>
         </TotalContainer>
 
@@ -177,7 +215,7 @@ const CobroScreen = ({ route: { params } }) => {
       <ButtonContainer>
         <Button
           loading={loading}
-          // onPress={() => {}}
+          onPress={doTrans}
           onPress={calcular}
           text="COBRAR"
         />
